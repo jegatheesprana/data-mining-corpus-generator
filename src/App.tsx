@@ -32,6 +32,7 @@ function App() {
         value: row[col]
       }))
     })
+    // @ts-ignore: Unreachable code error
     await writeXlsxFile([headerRow, ...dataArray], {
       fileName: fileName.split(".xlsx")[0]+"-modified"+".xlsx"
     })
