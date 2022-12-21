@@ -61,6 +61,10 @@ function App() {
         console.log("Error")
       }
     }
+
+    return () => {
+      handleSaveLocal()
+    }
   }, [])
 
   return (

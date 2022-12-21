@@ -17,6 +17,7 @@ const FileViewer = ({data, setData, onExport, handleSaveLocal, handleReset}: any
 
     const handleSongChange = (newSong: any) => {
         if (0<=newSong && newSong<data.length) {
+            handleSave()
             setCurrentSong(newSong)
         }
     }
@@ -107,7 +108,7 @@ const FileViewer = ({data, setData, onExport, handleSaveLocal, handleReset}: any
                     <Button variant="contained" fullWidth onClick={handleSaveLocal} >Save Project</Button>
                 </Grid>
                 <Grid item >
-                    <Button variant="contained" fullWidth onClick={handleReset} >Reset</Button>
+                    <Button variant="contained" fullWidth onClick={handleReset} >Clear</Button>
                 </Grid>
                 <Grid item >
                     <Button variant="contained" fullWidth onClick={onExport} >Export</Button>
