@@ -6,7 +6,7 @@ import Loader from './Loader';
 
 const map:any = {}
 columns.map((row: any)=> {
-    map[row]=row
+    map[row.field]=row.field
 })
 
 const SelectFile = ({onFileLoad, setFileName}: any) => {

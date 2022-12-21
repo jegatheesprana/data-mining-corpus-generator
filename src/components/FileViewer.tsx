@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import MetaDataEditor from './metaDataEditor';
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -48,6 +49,14 @@ const FileViewer = ({data, setData, onExport, handleSaveLocal, handleReset}: any
         })
     }
 
+    const handleSaveMeta = (meta: any) => {
+        setData((data: any)=>{
+            const newData = [...data]
+            newData[currentSong] = meta
+            return newData
+        })
+    }
+
     useEffect(()=>{
         setLyrics(data[currentSong].lyrics||"")
         setMetaphor(data[currentSong].metaphor||"")
@@ -58,13 +67,16 @@ const FileViewer = ({data, setData, onExport, handleSaveLocal, handleReset}: any
         <Container sx={{minHeight: '100vh'}}>
         <Box sx={{ flexGrow: 1, mt: 2 }}>
             <Grid container spacing={2}>
-                <Grid item xs={1}>
+                <Grid item xs={1} sx={{display: 'flex', alignItems: 'center'}}>
                     <Button variant="contained" fullWidth onClick={()=> handleSongChange(currentSong - 1)} disabled={currentSong===0}>Previous</Button>
                 </Grid>
-                <Grid item xs={5}>
-                    {(currentSong+1) + ". " + data[currentSong].song_name}
+                <Grid item xs={5} sx={{display: 'flex', alignItems: 'center'}}>
+                    <span>{(currentSong+1) + ". "}</span>
+                    &nbsp;
+                    <a href={data[currentSong].lyrics_link} target="_blank">{data[currentSong].song_name}</a>
+                    
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={5} sx={{display: 'flex', alignItems: 'center'}}>
                     <TextField
                         id="outlined-select-currency"
                         select
@@ -81,7 +93,7 @@ const FileViewer = ({data, setData, onExport, handleSaveLocal, handleReset}: any
                         ))}
                     </TextField>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={1} sx={{display: 'flex', alignItems: 'center'}}>
                     <Button variant="contained" fullWidth onClick={()=> handleSongChange(currentSong + 1)} disabled={currentSong===data.length-1}>Next</Button>
                 </Grid>
 
@@ -99,6 +111,9 @@ const FileViewer = ({data, setData, onExport, handleSaveLocal, handleReset}: any
                 </Grid>
                 <Grid item >
                     <Button variant="contained" fullWidth onClick={onExport} >Export</Button>
+                </Grid>
+                <Grid item >
+                    <MetaDataEditor song={data[currentSong]} onSave={handleSaveMeta} />
                 </Grid>
                 <Grid item >
                     <Button variant="contained" fullWidth onClick={handleSave} color="error" disabled={!edited}>Save</Button>

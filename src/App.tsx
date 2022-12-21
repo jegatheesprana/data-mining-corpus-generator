@@ -24,12 +24,12 @@ function App() {
     console.log('exporting')
     const headerRow = columns.map((col:any)=>({
       fontWeight: 'bold',
-      value: col
+      value: col.field
     }))
     const dataArray = data.filter((row: any)=>!row.removed).map((row: any)=>{
       return columns.map((col:any)=>({
         type: String,
-        value: row[col]
+        value: row[col.field]
       }))
     })
     // @ts-ignore: Unreachable code error
