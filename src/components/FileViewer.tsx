@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import MetaDataEditor from './MetaDataEditor';
 
 import Box from '@mui/material/Box';
@@ -14,6 +14,9 @@ const FileViewer = ({data, setData, onExport, handleSaveLocal, handleReset}: any
     const [lyrics, setLyrics] = useState("")
     const [metaphor, setMetaphor] = useState("")
     const [edited, setEdited] = useState(false)
+
+    const lyricsRef = useRef(null)
+    const metaphorRef = useRef(null)
 
     const handleSongChange = (newSong: any) => {
         if (0<=newSong && newSong<data.length) {
@@ -61,7 +64,11 @@ const FileViewer = ({data, setData, onExport, handleSaveLocal, handleReset}: any
     useEffect(()=>{
         setLyrics(data[currentSong].lyrics||"")
         setMetaphor(data[currentSong].metaphor||"")
-        setEdited(false)
+        console.log(lyricsRef.current)
+        // @ts-ignore: Unreachable code error
+        lyricsRef.current.scrollTop = 0
+        // @ts-ignore: Unreachable code error
+        metaphorRef.current.scrollTop = 0
     }, [currentSong])
 
     return (
@@ -132,6 +139,7 @@ const FileViewer = ({data, setData, onExport, handleSaveLocal, handleReset}: any
                         value={lyrics}
                         onChange={handleLyrisChange}
                         fullWidth
+                        inputRef={lyricsRef}
                     />
                 </Grid>
                 <Grid item xs={6}>
@@ -143,6 +151,7 @@ const FileViewer = ({data, setData, onExport, handleSaveLocal, handleReset}: any
                         value={metaphor}
                         onChange={handleMetaphorChange}
                         fullWidth
+                        inputRef={metaphorRef}
                     />
                 </Grid>
             </Grid>

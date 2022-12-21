@@ -54,17 +54,20 @@ function App() {
     if (savedItems) {
       try {
         const parsed = JSON.parse(savedItems)
-        setData(parsed.data)
-        setFileName(parsed.fileName)
-        setFileLoaded(true)
+        if (parsed.data.length) {
+          setData(parsed.data)
+          setFileName(parsed.fileName)
+          setFileLoaded(true)
+
+        }
       } catch {
         console.log("Error")
       }
     }
 
-    return () => {
-      handleSaveLocal()
-    }
+    // return () => {
+    //   handleSaveLocal()
+    // }
   }, [])
 
   return (
