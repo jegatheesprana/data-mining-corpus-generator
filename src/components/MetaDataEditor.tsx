@@ -69,7 +69,7 @@ const MetaDataEditor = ({song, onSave}: any) => {
                             name={col.field}
                             fullWidth
                             // @ts-ignore: Unreachable code error
-                            value={values[col.field]}
+                            value={values[col.field]||""}
                             onChange={handleChange}
                         />
                     </Grid>
