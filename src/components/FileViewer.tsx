@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import MetaDataEditor from './metaDataEditor';
+import MetaDataEditor from './MetaDataEditor';
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
