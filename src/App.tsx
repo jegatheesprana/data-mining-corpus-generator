@@ -55,7 +55,15 @@ function App() {
       try {
         const parsed = JSON.parse(savedItems)
         if (parsed.data.length) {
-          setData(parsed.data)
+          setData(parsed.data.map((row: any)=>{
+            if (row.metaphor) {
+                row.metaphor.split("\n\n").map((old: string, id: number)=>{
+                    row[`metaphor_${id+1}`]= old
+                })
+                row.metaphor = ""
+            }
+            return row
+        }))
           setFileName(parsed.fileName)
           setFileLoaded(true)
 

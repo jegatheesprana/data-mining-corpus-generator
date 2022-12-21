@@ -17,7 +17,15 @@ const SelectFile = ({onFileLoad, setFileName}: any) => {
         readXlsxFile(e.target.files[0], {map}).then(({rows}) => {
             console.log(rows)
             setFileName(e.target.files[0].name)
-            if (onFileLoad) onFileLoad(rows)
+            if (onFileLoad) onFileLoad(rows.map((row: any)=>{
+                if (row.metaphor) {
+                    row.metaphor.split("\n\n").map((old: string, id: number)=>{
+                        row[`metaphor_${id+1}`]= old
+                    })
+                    row.metaphor = ""
+                }
+                return row
+            }))
         })
     }
     return (
