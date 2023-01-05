@@ -21,6 +21,7 @@ import CloseIcon from "@mui/icons-material/Close"
 import Typography from "@mui/material/Typography"
 
 import DeleteIcon from "@mui/icons-material/Delete"
+import SearchIcon from "@mui/icons-material/Search"
 
 // @ts-ignore: Unreachable code error
 const HtmlTooltip = styled(({ className, ...props }) => (
@@ -52,8 +53,8 @@ const FileViewer = ({
     const [open, setOpen] = useState(false)
     const [message, setMessage] = useState("")
 
-    const lyricsRef = useRef(null)
-    const metaphorRef = useRef(null)
+    const lyricsRef = useRef<HTMLTextAreaElement>(null)
+    const metaphorRef = useRef<HTMLDivElement>(null)
 
     const handleCloseSnackbar = (event: any, reason: any) => {
         if (reason === "clickaway") {
@@ -192,13 +193,41 @@ const FileViewer = ({
         })
     }
 
+    const handleFind = (id: number) => {
+        let start = lyrics.indexOf(metaphors[id].metaphor)
+        if (start === -1) {
+            let start_ = lyrics
+                .replace(/\s\s+/g, " ")
+                .indexOf(metaphors[id].metaphor)
+            const selection = lyrics.substring(start_, lyrics.length)
+            const start_2 = selection
+                .replace(/\s\s+/g, " ")
+                .indexOf(metaphors[id].metaphor)
+            start = start_ + start_2
+        }
+        const end = start + metaphors[id].metaphor.length
+
+        if (start > 0 && lyricsRef.current) {
+            lyricsRef.current.focus()
+            lyricsRef.current.value = lyrics.substring(0, end)
+            lyricsRef.current.scrollTop = 0
+            lyricsRef.current.scrollTop = lyricsRef.current.scrollHeight
+            lyricsRef.current.value = lyrics
+            lyricsRef.current.setSelectionRange(start, end)
+        } else {
+            setMessage("Selection not found")
+            setOpen(true)
+        }
+    }
+
     const handleSelectLyrics = (e: any) => {
         let textarea = e.target
         let selection = textarea.value.substring(
             textarea.selectionStart,
             textarea.selectionEnd
         )
-        setSelection(selection.replace(/\s\s+/g, " "))
+        // setSelection(selection.replace(/\s\s+/g, " "))
+        setSelection(selection.replace(/\s\s+/g, " ").trim())
     }
 
     const handleCreate = () => {
@@ -487,14 +516,24 @@ const FileViewer = ({
                                 <Card key={id}>
                                     <CardHeader
                                         action={
-                                            <IconButton
-                                                aria-label="settings"
-                                                onClick={() =>
-                                                    handleRemoveMetaphor(id)
-                                                }
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
+                                            <>
+                                                <IconButton
+                                                    aria-label="settings"
+                                                    onClick={() =>
+                                                        handleFind(id)
+                                                    }
+                                                >
+                                                    <SearchIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    aria-label="settings"
+                                                    onClick={() =>
+                                                        handleRemoveMetaphor(id)
+                                                    }
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </>
                                         }
                                         // title="Shrimp and Chorizo Paella"
                                         subheader={"Metaphor " + (id + 1)}
