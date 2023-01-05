@@ -398,10 +398,9 @@ const FileViewer = ({
                             <Grid item>
                                 <Button
                                     variant="contained"
-                                    color="error"
+                                    color={edited ? "error" : "primary"}
                                     fullWidth
                                     onClick={handleSaveProject}
-                                    disabled={!edited}
                                 >
                                     Save Project
                                 </Button>
