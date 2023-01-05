@@ -42,8 +42,9 @@ const FileViewer = ({
     onExport,
     handleSaveLocal,
     handleReset,
+    currentSong,
+    setCurrentSong,
 }: any) => {
-    const [currentSong, setCurrentSong] = useState(0)
     const [lyrics, setLyrics] = useState("")
     const [metaphors, setMetaphors] = useState([{ metaphor: "", meaning: "" }])
     const [edited, setEdited] = useState(false)
@@ -130,7 +131,7 @@ const FileViewer = ({
     }
 
     const handleSaveProject = () => {
-        handleSaveLocal(handleSave())
+        handleSaveLocal(handleSave(), currentSong)
         setEdited(false)
         setMessage("Saved")
         setOpen(true)

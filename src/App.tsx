@@ -16,6 +16,7 @@ function App() {
     const [fileName, setFileName] = useState("")
     const [data, setData] = useState([])
     const [exportModal, setExportModal] = useState(false)
+    const [currentSong, setCurrentSong] = useState(0)
 
     const onFileLoad = (data: any) => {
         setFileLoaded(true)
@@ -55,8 +56,11 @@ function App() {
         })
     }
 
-    const handleSaveLocal = (data: any) => {
-        localStorage.setItem("savedItems", JSON.stringify({ fileName, data }))
+    const handleSaveLocal = (data: any, currentSong: number) => {
+        localStorage.setItem(
+            "savedItems",
+            JSON.stringify({ fileName, data, currentSong })
+        )
     }
 
     const handleReset = () => {
@@ -86,6 +90,7 @@ function App() {
                         })
                     )
                     setFileName(parsed.fileName)
+                    setCurrentSong(parsed.currentSong || 0)
                     setFileLoaded(true)
                 }
             } catch {
@@ -107,6 +112,8 @@ function App() {
                     onExport={handleExportClick}
                     handleSaveLocal={handleSaveLocal}
                     handleReset={handleReset}
+                    currentSong={currentSong}
+                    setCurrentSong={setCurrentSong}
                 />
             ) : (
                 <SelectFile onFileLoad={onFileLoad} setFileName={setFileName} />
