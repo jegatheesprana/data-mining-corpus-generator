@@ -47,7 +47,7 @@ function App() {
         dataArray = dataArray.map((row: any) => {
             return columns.map((col: any) => ({
                 type: String,
-                value: row[col.field],
+                value: row[col.field]?.toString() || "",
             }))
         })
         // @ts-ignore: Unreachable code error
