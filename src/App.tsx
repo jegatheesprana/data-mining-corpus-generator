@@ -86,7 +86,7 @@ function App() {
                                     })
                                 row.metaphor = ""
                             }
-                            for (let i = 0; i < 6; i++) {
+                            for (let i = 1; i < 6; i++) {
                                 if (row[`metaphor_${i}_meaning`]) {
                                     row[`metaphor_${i}_source`] =
                                         row[`metaphor_${i}_meaning`]
