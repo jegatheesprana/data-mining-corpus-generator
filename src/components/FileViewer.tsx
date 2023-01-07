@@ -47,7 +47,9 @@ const FileViewer = ({
     setCurrentSong,
 }: any) => {
     const [lyrics, setLyrics] = useState("")
-    const [metaphors, setMetaphors] = useState([{ metaphor: "", meaning: "" }])
+    const [metaphors, setMetaphors] = useState([
+        { metaphor: "", source: "", target: "", interpretation: "" },
+    ])
     const [edited, setEdited] = useState(false)
     const [selection, setSelection] = useState("")
     const [open, setOpen] = useState(false)
@@ -116,7 +118,10 @@ const FileViewer = ({
         for (let i = 1; i < 6; i++) {
             const meta = metaphors[i - 1]
             changedSong[`metaphor_${i}`] = meta?.metaphor || ""
-            changedSong[`metaphor_${i}_meaning`] = meta?.meaning || ""
+            changedSong[`metaphor_${i}_source`] = meta?.source || ""
+            changedSong[`metaphor_${i}_target`] = meta?.target || ""
+            changedSong[`metaphor_${i}_interpretation`] =
+                meta?.interpretation || ""
         }
 
         newData[currentSong] = changedSong
@@ -174,7 +179,7 @@ const FileViewer = ({
         if (metaphors.length < 5) {
             setMetaphors((metaphors) => [
                 ...metaphors,
-                { metaphor: "", meaning: "" },
+                { metaphor: "", source: "", target: "", interpretation: "" },
             ])
         } else {
             setMessage("Max metaphor is 5")
@@ -187,7 +192,12 @@ const FileViewer = ({
             const newMeta = [...metaphors]
             newMeta.splice(id, 1)
             if (!newMeta.length) {
-                newMeta.push({ metaphor: "", meaning: "" })
+                newMeta.push({
+                    metaphor: "",
+                    target: "",
+                    source: "",
+                    interpretation: "",
+                })
             }
             return newMeta
         })
@@ -233,13 +243,15 @@ const FileViewer = ({
     const handleCreate = () => {
         if (
             !metaphors[metaphors.length - 1].metaphor &&
-            !metaphors[metaphors.length - 1].meaning
+            !metaphors[metaphors.length - 1].source
         ) {
             setMetaphors((metaphors) => {
                 const newMeta = [...metaphors]
                 newMeta[newMeta.length - 1] = {
                     metaphor: selection,
-                    meaning: "",
+                    source: "",
+                    target: "",
+                    interpretation: "",
                 }
                 return newMeta
             })
@@ -249,7 +261,9 @@ const FileViewer = ({
                     const newMeta = [...metaphors]
                     newMeta[newMeta.length] = {
                         metaphor: selection,
-                        meaning: "",
+                        source: "",
+                        target: "",
+                        interpretation: "",
                     }
                     return newMeta
                 })
@@ -267,16 +281,30 @@ const FileViewer = ({
         const metaphors = []
         for (let i = 1; i < 6; i++) {
             if (data[currentSong][`metaphor_${i}`]) {
+                // if (data[currentSong][`metaphor_${i}_meaning`]) {
+                //     metaphors.push({
+                //         metaphor: data[currentSong][`metaphor_${i}`],
+                //         target: data[currentSong][`metaphor_${i}_meaning`],
+                //         source: "",
+                //         interpretation: "",
+                //     })
+                // } else {
                 metaphors.push({
                     metaphor: data[currentSong][`metaphor_${i}`],
-                    meaning: data[currentSong][`metaphor_${i}_meaning`],
+                    target: data[currentSong][`metaphor_${i}_target`] || "",
+                    source: data[currentSong][`metaphor_${i}_source`] || "",
+                    interpretation:
+                        data[currentSong][`metaphor_${i}_interpretation`] || "",
                 })
+                // }
             }
         }
         if (metaphors.length) {
             setMetaphors(metaphors)
         } else {
-            setMetaphors([{ metaphor: "", meaning: "" }])
+            setMetaphors([
+                { metaphor: "", target: "", source: "", interpretation: "" },
+            ])
         }
 
         setSelection("")
@@ -543,7 +571,7 @@ const FileViewer = ({
                                             id="outlined-multiline-static"
                                             label="Metaphor"
                                             multiline
-                                            rows={3}
+                                            rows={2}
                                             value={metaphor.metaphor}
                                             onChange={(e) =>
                                                 handleMetaphorChange(
@@ -557,18 +585,51 @@ const FileViewer = ({
                                         />
                                         <TextField
                                             id="outlined-multiline-static"
-                                            label="Meaning"
+                                            label="Source"
                                             multiline
-                                            rows={3}
-                                            value={metaphor.meaning}
+                                            rows={1}
+                                            value={metaphor.source}
                                             onChange={(e) =>
                                                 handleMetaphorChange(
                                                     id,
-                                                    "meaning",
+                                                    "source",
                                                     e
                                                 )
                                             }
                                             fullWidth
+                                            sx={{ mb: 1 }}
+                                        />
+                                        <TextField
+                                            id="outlined-multiline-static"
+                                            label="Target"
+                                            multiline
+                                            rows={1}
+                                            value={metaphor.target}
+                                            onChange={(e) =>
+                                                handleMetaphorChange(
+                                                    id,
+                                                    "target",
+                                                    e
+                                                )
+                                            }
+                                            fullWidth
+                                            sx={{ mb: 1 }}
+                                        />
+                                        <TextField
+                                            id="outlined-multiline-static"
+                                            label="Interpretation"
+                                            multiline
+                                            rows={1}
+                                            value={metaphor.interpretation}
+                                            onChange={(e) =>
+                                                handleMetaphorChange(
+                                                    id,
+                                                    "interpretation",
+                                                    e
+                                                )
+                                            }
+                                            fullWidth
+                                            sx={{ mb: 1 }}
                                         />
                                     </CardContent>
                                 </Card>
