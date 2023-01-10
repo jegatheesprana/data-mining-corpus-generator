@@ -10,6 +10,8 @@ import "@fontsource/roboto/400.css"
 import "@fontsource/roboto/500.css"
 import "@fontsource/roboto/700.css"
 import ExportPrompt from "./components/ExportPrompt"
+import ResetWarning from "./components/ResetWarning"
+import Footer from "./components/Footer"
 
 function App() {
     const [fileLoaded, setFileLoaded] = useState(false)
@@ -17,6 +19,7 @@ function App() {
     const [data, setData] = useState([])
     const [exportModal, setExportModal] = useState(false)
     const [currentSong, setCurrentSong] = useState(0)
+    const [resetWarning, setResetWarning] = useState(false)
 
     const onFileLoad = (data: any) => {
         setFileLoaded(true)
@@ -61,6 +64,14 @@ function App() {
             "savedItems",
             JSON.stringify({ fileName, data, currentSong })
         )
+    }
+
+    const handleResetClick = () => {
+        setResetWarning(true)
+    }
+
+    const handleResetClose = () => {
+        setResetWarning(false)
     }
 
     const handleReset = () => {
@@ -110,26 +121,37 @@ function App() {
     }, [])
 
     return (
-        <div className="container">
-            {fileLoaded ? (
-                <FileViewer
-                    data={data}
-                    setData={setData}
-                    onExport={handleExportClick}
-                    handleSaveLocal={handleSaveLocal}
-                    handleReset={handleReset}
-                    currentSong={currentSong}
-                    setCurrentSong={setCurrentSong}
+        <>
+            <div className="app-container">
+                {fileLoaded ? (
+                    <FileViewer
+                        data={data}
+                        setData={setData}
+                        onExport={handleExportClick}
+                        handleSaveLocal={handleSaveLocal}
+                        handleReset={handleResetClick}
+                        currentSong={currentSong}
+                        setCurrentSong={setCurrentSong}
+                    />
+                ) : (
+                    <SelectFile
+                        onFileLoad={onFileLoad}
+                        setFileName={setFileName}
+                    />
+                )}
+                <ExportPrompt
+                    open={exportModal}
+                    handleClose={handleClose}
+                    onExport={handleExport}
                 />
-            ) : (
-                <SelectFile onFileLoad={onFileLoad} setFileName={setFileName} />
-            )}
-            <ExportPrompt
-                open={exportModal}
-                handleClose={handleClose}
-                onExport={handleExport}
-            />
-        </div>
+                <ResetWarning
+                    open={resetWarning}
+                    handleClose={handleResetClose}
+                    onAccept={handleReset}
+                />
+            </div>
+            <Footer />
+        </>
     )
 }
 

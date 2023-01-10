@@ -1,4 +1,6 @@
 import { useState } from "react"
+import Typography from "@mui/material/Typography"
+import Box from "@mui/material/Box"
 import readXlsxFile from "read-excel-file"
 import columns from "../columns"
 
@@ -51,7 +53,29 @@ const SelectFile = ({ onFileLoad, setFileName }: any) => {
             {fileLoaded ? (
                 <Loader />
             ) : (
-                <input type="file" onChange={handleChange} />
+                <Box sx={{ maxWidth: "80%" }}>
+                    <Typography variant="body1" gutterBottom textAlign="center">
+                        Choose any Excel file (.xlsx) with the following column
+                        names
+                    </Typography>
+                    <Box sx={{ mb: 2 }}>
+                        <Typography variant="subtitle1" gutterBottom>
+                            <b>lyrics</b> Song Lyrics
+                        </Typography>
+                        {columns
+                            .filter((col: any) => col.edit)
+                            .map((column: any, id: number) => (
+                                <Typography
+                                    variant="subtitle1"
+                                    gutterBottom
+                                    key={id}
+                                >
+                                    <b>{column.field}</b> {column.name}
+                                </Typography>
+                            ))}
+                    </Box>
+                    <input type="file" onChange={handleChange} />
+                </Box>
             )}
         </div>
     )

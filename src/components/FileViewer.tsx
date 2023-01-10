@@ -19,9 +19,12 @@ import Tooltip, { tooltipClasses } from "@mui/material/Tooltip"
 import Snackbar from "@mui/material/Snackbar"
 import CloseIcon from "@mui/icons-material/Close"
 import Typography from "@mui/material/Typography"
+import Menu from "@mui/material/Menu"
 
 import DeleteIcon from "@mui/icons-material/Delete"
 import SearchIcon from "@mui/icons-material/Search"
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos"
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos"
 
 // @ts-ignore: Unreachable code error
 const HtmlTooltip = styled(({ className, ...props }) => (
@@ -54,9 +57,19 @@ const FileViewer = ({
     const [selection, setSelection] = useState("")
     const [open, setOpen] = useState(false)
     const [message, setMessage] = useState("")
+    const [anchorEl, setAnchorEl] = useState(null)
 
     const lyricsRef = useRef<HTMLTextAreaElement>(null)
     const metaphorRef = useRef<HTMLDivElement>(null)
+
+    const openAction = Boolean(anchorEl)
+
+    const handleActionClick = (event: any) => {
+        setAnchorEl(event.currentTarget)
+    }
+    const handleActionClose = () => {
+        setAnchorEl(null)
+    }
 
     const handleCloseSnackbar = (event: any, reason: any) => {
         if (reason === "clickaway") {
@@ -173,6 +186,7 @@ const FileViewer = ({
             newData[currentSong] = meta
             return newData
         })
+        setEdited(true)
     }
 
     const handleAddMetaphor = () => {
@@ -326,98 +340,124 @@ const FileViewer = ({
             />
             <Box sx={{ flexGrow: 1, mt: 2 }}>
                 <Grid container spacing={2}>
-                    <Grid
-                        item
-                        xs={1}
-                        sx={{ display: "flex", alignItems: "center" }}
-                    >
-                        <Button
-                            variant="contained"
-                            fullWidth
-                            onClick={() => handleSongChange(currentSong - 1)}
-                            disabled={currentSong === 0}
-                        >
-                            Previous
-                        </Button>
-                    </Grid>
-                    <Grid
-                        item
-                        xs={5}
-                        sx={{ display: "flex", alignItems: "center" }}
-                    >
-                        {/* @ts-ignore: Unreachable code error */}
-                        <HtmlTooltip
-                            title={
-                                <>
-                                    {columns
-                                        .filter((col: any) => col.edit)
-                                        .map((column: any) => (
-                                            <Typography
-                                                color="inherit"
-                                                key={column.field}
-                                            >{`${column.name}: ${
-                                                data[currentSong][column.field]
-                                            }`}</Typography>
-                                        ))}
-                                </>
-                            }
-                        >
-                            <div>
-                                <span>{currentSong + 1 + ". "}</span>
-                                &nbsp;
-                                <a
-                                    href={data[currentSong].lyrics_link}
-                                    target="_blank"
+                    <Grid item xs={6}>
+                        <Grid container spacing={2}>
+                            <Grid
+                                item
+                                lg={3}
+                                md={4}
+                                xs={12}
+                                sx={{ display: "flex", alignItems: "center" }}
+                            >
+                                <Button
+                                    variant="contained"
+                                    fullWidth
+                                    onClick={() =>
+                                        handleSongChange(currentSong - 1)
+                                    }
+                                    disabled={currentSong === 0}
+                                    startIcon={<ArrowBackIosIcon />}
                                 >
-                                    {data[currentSong].song_name}
-                                </a>
-                            </div>
-                        </HtmlTooltip>
-                    </Grid>
-                    <Grid
-                        item
-                        xs={5}
-                        sx={{ display: "flex", alignItems: "center" }}
-                    >
-                        <TextField
-                            id="outlined-select-currency"
-                            select
-                            label="Song"
-                            value={currentSong}
-                            onChange={(e) => handleSongChange(e.target.value)}
-                            fullWidth
-                            variant="standard"
-                        >
-                            {data.map((row: any, id: any) => (
-                                <MenuItem
-                                    key={id}
-                                    value={id}
-                                    sx={
-                                        row.selected
-                                            ? (theme) => ({
-                                                  borderLeft: `5px solid ${theme.palette.primary.main}`,
-                                              })
-                                            : { ml: "5px" }
+                                    Previous
+                                </Button>
+                            </Grid>
+                            <Grid
+                                item
+                                lg={9}
+                                md={8}
+                                xs={12}
+                                sx={{ display: "flex", alignItems: "center" }}
+                            >
+                                {/* @ts-ignore: Unreachable code error */}
+                                <HtmlTooltip
+                                    title={
+                                        <>
+                                            {columns
+                                                .filter((col: any) => col.edit)
+                                                .map((column: any) => (
+                                                    <Typography
+                                                        color="inherit"
+                                                        key={column.field}
+                                                    >{`${column.name}: ${
+                                                        data[currentSong][
+                                                            column.field
+                                                        ]
+                                                    }`}</Typography>
+                                                ))}
+                                        </>
                                     }
                                 >
-                                    {id + 1 + ". " + row.song_name}
-                                </MenuItem>
-                            ))}
-                        </TextField>
+                                    <div>
+                                        <span>{currentSong + 1 + ". "}</span>
+                                        &nbsp;
+                                        <a
+                                            href={data[currentSong].lyrics_link}
+                                            target="_blank"
+                                        >
+                                            {data[currentSong].song_name}
+                                        </a>
+                                    </div>
+                                </HtmlTooltip>
+                            </Grid>
+                        </Grid>
                     </Grid>
-                    <Grid
-                        item
-                        xs={1}
-                        sx={{ display: "flex", alignItems: "center" }}
-                    >
-                        <Button
-                            variant="contained"
-                            fullWidth
-                            onClick={() => handleSongChange(currentSong + 1)}
-                            disabled={currentSong === data.length - 1}
-                        >
-                            Next
-                        </Button>
+                    <Grid item xs={6}>
+                        <Grid container spacing={2} flexDirection="row-reverse">
+                            <Grid
+                                item
+                                lg={3}
+                                md={4}
+                                xs={12}
+                                sx={{ display: "flex", alignItems: "center" }}
+                            >
+                                <Button
+                                    variant="contained"
+                                    fullWidth
+                                    onClick={() =>
+                                        handleSongChange(currentSong + 1)
+                                    }
+                                    disabled={currentSong === data.length - 1}
+                                    endIcon={<ArrowForwardIosIcon />}
+                                >
+                                    Next
+                                </Button>
+                            </Grid>
+                            <Grid
+                                item
+                                lg={9}
+                                md={8}
+                                xs={12}
+                                sx={{ display: "flex", alignItems: "center" }}
+                            >
+                                <TextField
+                                    id="outlined-select-currency"
+                                    select
+                                    label="Song"
+                                    value={currentSong}
+                                    onChange={(e) =>
+                                        handleSongChange(e.target.value)
+                                    }
+                                    fullWidth
+                                    variant="standard"
+                                >
+                                    {data.map((row: any, id: any) => (
+                                        <MenuItem
+                                            key={id}
+                                            value={id}
+                                            sx={
+                                                row.selected
+                                                    ? (theme) => ({
+                                                          borderLeft: `5px solid ${theme.palette.primary.main}`,
+                                                      })
+                                                    : { ml: "5px" }
+                                            }
+                                        >
+                                            {id + 1 + ". " + row.song_name}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                        </Grid>
                     </Grid>
 
                     <Grid item xs={12}>
@@ -452,7 +492,16 @@ const FileViewer = ({
                                         : "Select"}
                                 </Button>
                             </Grid>
-                            <Grid item>
+                            <Grid
+                                item
+                                sx={{
+                                    display: {
+                                        lg: "block",
+                                        sm: "none",
+                                        xs: "none",
+                                    },
+                                }}
+                            >
                                 <Button
                                     variant="contained"
                                     color={edited ? "error" : "primary"}
@@ -462,7 +511,16 @@ const FileViewer = ({
                                     Save Project
                                 </Button>
                             </Grid>
-                            <Grid item>
+                            <Grid
+                                item
+                                sx={{
+                                    display: {
+                                        lg: "block",
+                                        sm: "none",
+                                        xs: "none",
+                                    },
+                                }}
+                            >
                                 <Button
                                     variant="contained"
                                     fullWidth
@@ -471,7 +529,16 @@ const FileViewer = ({
                                     Clear
                                 </Button>
                             </Grid>
-                            <Grid item>
+                            <Grid
+                                item
+                                sx={{
+                                    display: {
+                                        lg: "block",
+                                        sm: "none",
+                                        xs: "none",
+                                    },
+                                }}
+                            >
                                 <Button
                                     variant="contained"
                                     fullWidth
@@ -479,6 +546,44 @@ const FileViewer = ({
                                 >
                                     Export
                                 </Button>
+                            </Grid>
+
+                            <Grid
+                                item
+                                sx={{ display: { lg: "none", sm: "block" } }}
+                            >
+                                <Button
+                                    id="basic-button"
+                                    aria-controls={
+                                        openAction ? "basic-menu" : undefined
+                                    }
+                                    aria-haspopup="true"
+                                    aria-expanded={open ? "true" : undefined}
+                                    onClick={handleActionClick}
+                                    variant="contained"
+                                >
+                                    Actions
+                                </Button>
+                                <Menu
+                                    id="basic-menu"
+                                    anchorEl={anchorEl}
+                                    open={openAction}
+                                    onClose={handleActionClose}
+                                    onClick={handleActionClose}
+                                    MenuListProps={{
+                                        "aria-labelledby": "basic-button",
+                                    }}
+                                >
+                                    <MenuItem onClick={handleSaveProject}>
+                                        Save Project
+                                    </MenuItem>
+                                    <MenuItem onClick={handleReset}>
+                                        Clear
+                                    </MenuItem>
+                                    <MenuItem onClick={onExport}>
+                                        Export
+                                    </MenuItem>
+                                </Menu>
                             </Grid>
                             <Grid item>
                                 <MetaDataEditor
