@@ -95,9 +95,19 @@ function App() {
                 return finalData
             })
 
-            const blob = new Blob([JSON.stringify(dataArray, undefined, 2)], {
-                type: "text/json",
-            })
+            // const blob = new Blob([JSON.stringify(dataArray, undefined, 2)], {
+            //     type: "text/json",
+            // })
+            const blob = new Blob(
+                [
+                    dataArray
+                        .map((data: any) => JSON.stringify(data))
+                        .join("\n") + "\n",
+                ],
+                {
+                    type: "text/json",
+                }
+            )
             const link = document.createElement("a")
 
             link.download = fileName.split(".xlsx")[0] + "-modified" + ".json"
