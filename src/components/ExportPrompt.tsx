@@ -24,8 +24,8 @@ export default function ExportPrompt({ open, handleClose, onExport }: any) {
         setSetting(setting_)
     }
 
-    const handleExportClick = () => {
-        onExport(setting)
+    const handleExportClick = (type: string) => {
+        onExport({ ...setting, type })
         handleClose()
     }
 
@@ -66,7 +66,12 @@ export default function ExportPrompt({ open, handleClose, onExport }: any) {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleExportClick}>Export</Button>
+                    <Button onClick={() => handleExportClick("json")}>
+                        JSON
+                    </Button>
+                    <Button onClick={() => handleExportClick("xlxs")}>
+                        XLXS
+                    </Button>
                 </DialogActions>
             </Dialog>
         </div>

@@ -34,7 +34,11 @@ function App() {
         setExportModal(false)
     }
 
-    const handleExport = async ({ removed = true, selected = false }) => {
+    const handleExport = async ({
+        removed = true,
+        selected = false,
+        type = "xlxs",
+    }) => {
         console.log("exporting")
         const headerRow = columns.map((col: any) => ({
             fontWeight: "bold",
@@ -47,16 +51,72 @@ function App() {
         if (removed) {
             dataArray = dataArray.filter((row: any) => !row.removed)
         }
-        dataArray = dataArray.map((row: any) => {
-            return columns.map((col: any) => ({
-                type: String,
-                value: row[col.field]?.toString() || "",
-            }))
-        })
-        // @ts-ignore: Unreachable code error
-        await writeXlsxFile([headerRow, ...dataArray], {
-            fileName: fileName.split(".xlsx")[0] + "-modified" + ".xlsx",
-        })
+        if (type === "xlxs") {
+            dataArray = dataArray.map((row: any) => {
+                return columns.map((col: any) => ({
+                    type: String,
+                    value: row[col.field]?.toString() || "",
+                }))
+            })
+            // @ts-ignore: Unreachable code error
+            await writeXlsxFile([headerRow, ...dataArray], {
+                fileName: fileName.split(".xlsx")[0] + "-modified" + ".xlsx",
+            })
+        } else {
+            dataArray = dataArray.map((data: any) => {
+                const metaphors = []
+                for (let i = 1; i < 6; i++) {
+                    if (data[`metaphor_${i}`]) {
+                        // if (data[`metaphor_${i}_meaning`]) {
+                        //     metaphors.push({
+                        //         metaphor: data[`metaphor_${i}`],
+                        //         target: data[`metaphor_${i}_meaning`],
+                        //         source: "",
+                        //         interpretation: "",
+                        //     })
+                        // } else {
+                        metaphors.push({
+                            metaphor: data[`metaphor_${i}`],
+                            target: data[`metaphor_${i}_target`] || "",
+                            source: data[`metaphor_${i}_source`] || "",
+                            interpretation:
+                                data[`metaphor_${i}_interpretation`] || "",
+                        })
+                        // }
+                    }
+                }
+                const finalData: any = {}
+                columns
+                    .filter((col: any) => col.jsonExport)
+                    .forEach((col: any) => {
+                        finalData[col.field] = data[col.field]
+                    })
+                finalData.metaphors = metaphors
+                return finalData
+            })
+
+            const blob = new Blob([JSON.stringify(dataArray, undefined, 2)], {
+                type: "text/json",
+            })
+            const link = document.createElement("a")
+
+            link.download = fileName.split(".xlsx")[0] + "-modified" + ".json"
+            link.href = window.URL.createObjectURL(blob)
+            link.dataset.downloadurl = [
+                "text/json",
+                link.download,
+                link.href,
+            ].join(":")
+
+            const evt = new MouseEvent("click", {
+                view: window,
+                bubbles: true,
+                cancelable: true,
+            })
+
+            link.dispatchEvent(evt)
+            link.remove()
+        }
     }
 
     const handleSaveLocal = (data: any, currentSong: number) => {
