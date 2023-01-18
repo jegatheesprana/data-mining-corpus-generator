@@ -101,7 +101,11 @@ function App() {
             const blob = new Blob(
                 [
                     dataArray
-                        .map((data: any) => JSON.stringify(data))
+                        .map(
+                            (data: any) =>
+                                '{"index": {"_index": "lyrics-test"}}\n' +
+                                JSON.stringify(data)
+                        )
                         .join("\n") + "\n",
                 ],
                 {
